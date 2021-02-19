@@ -4,6 +4,7 @@ open Fable.React
 open Fable.React.Props
 open Elmish
 open Elmish.React
+
 type Model = 
     {
         Count : int
@@ -12,24 +13,19 @@ type Model =
 type Msg =
     | Increment
     | Decrement
-    | IncrementBy of int
-    | Reset
-    
 
-let init () =
+let init () = 
     {
-        Count = 42
-    }
+     Count = 42
+    }, Cmd.none
 
-let update msg model : Model =  
+let update msg model : Model * Cmd<Msg> =  
     match msg with
     | Increment ->
-        { model with Count = model.Count + 1 } 
+        { model with Count = model.Count + 1 } , Cmd.none
     | Decrement ->
-        { model with Count = model.Count - 1 } 
-    | IncrementBy x ->
-        { model with Count = model.Count + x } 
-    | Reset -> init() 
+        { model with Count = model.Count - 1 } , Cmd.none
+   
      
 let view model dispatch = 
     div [] 
@@ -37,12 +33,9 @@ let view model dispatch =
          button [ OnClick (fun ev -> dispatch Decrement)] [ str "-"]
          h1 [] [ ofInt model.Count]
          button [ OnClick (fun ev -> dispatch Increment)][ str "+"]
-         button [ OnClick (fun ev -> dispatch (IncrementBy 5) )][ str "+5"]
-         button [ OnClick (fun ev -> dispatch Reset)][ str "Reset"]
-
         ]
 
-Program.mkSimple   init update view
+Program.mkProgram init update view
 |> Program.withReactSynchronous "app"
 |> Program.run
 
